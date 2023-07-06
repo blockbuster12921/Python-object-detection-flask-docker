@@ -1,5 +1,5 @@
 import base64
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, make_response, jsonify
 from flask_cors import CORS
 import numpy as np
 import io
@@ -22,11 +22,22 @@ def load_model():
                 return sess, detection_graph
 def detection_loop(images):
     res = []
+    inf_time_list = []
     for img in images:
-        res.append(detect_img(sess, model, img, 0.5))
-    print('res:', res)
+        tmp_res, inf_time = detect_img(sess, model, img, 0.5)
+        res.append(tmp_res)
+        print('###########')
+        print(tmp_res)
+        inf_time_list.append(inf_time)
+    data = {
+        "status": 200,
+        "result": res,
+        "avg_inf_time": sum(inf_time_list) / len(inf_time_list),
+    }
 
-    return res
+    print(data)
+    
+    return make_response(jsonify(data), 200)
 
 @app.route('/')
 def index():
