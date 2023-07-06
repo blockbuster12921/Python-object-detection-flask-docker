@@ -1,77 +1,46 @@
-# Lint as: python3
-# Copyright 2019 Google LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-from PIL import Image
-from PIL import ImageDraw
-import os
-import detect
-# import tflite_runtime.interpreter as tflite
-import platform
-import datetime
-import cv2
-import time
+import base64
+from flask import Flask, request, render_template
+from flask_cors import CORS
 import numpy as np
 import io
-from io import BytesIO
-from flask import Flask, request, Response, jsonify
-import random
-import re
-import base64
+from PIL import Image
+import cv2
+from detect import *
 
 app = Flask(__name__)
+CORS(app)
+def load_model():
+    detection_graph = tf.Graph()
+    with detection_graph.as_default():
+        od_graph_def = tf.compat.v1.GraphDef()
+        with tf.io.gfile.GFile(MODEL_PATH, 'rb') as fid:
+            serialized_graph = fid.read()
+            od_graph_def.ParseFromString(serialized_graph)
+            tf.import_graph_def(od_graph_def, name='')
+            with detection_graph.as_default():
+                sess = tf.compat.v1.Session(graph=detection_graph)
+                return sess, detection_graph
+def detection_loop(images):
+    res = []
+    for img in images:
+        res.append(detect_img(sess, model, img, 0.5))
+    print('res:', res)
 
+    return res
 
+@app.route('/')
+def index():
+  	return render_template("index.html")
 
-def detection_loop(filename_image):
-   #TODO
-   pass
-   """
-    data = {
-        "status": 200,
-        "bounding_boxes": bounding_boxes,
-        "inf_time": inf_times,
-        "avg_inf_time": str(avg_inf_time),
-        "upload_time": upload_times,
-        "avg_upload_time": str(avg_upload_time),
-        
-    }
-    return make_response(jsonify(data), 200)
-    """
-
-#initializing the flask app
-app = Flask(__name__)
-
-#routing http posts to this method
-@app.route('/api/detect', methods=['POST', 'GET'])
+@app.route('/api/detect', methods=['POST'])
 def main():
-  data=  request.get_json(force = True)
-  #get the array of images from the json body
-  imgs = data['images']
- 
-  #TODO prepare images for object detection 
-  #below is an example
-  images =[]
-  for img in imgs:
-    images.append((np.array(Image.open(io.BytesIO(base64.b64decode(img))),dtype=np.float32)))
-  
-  return detection_loop(filename_image)
-  
-# status_code = Response(status = 200)
-#  return status_code
-# image=cv2.imread(args.input)
-# image=cv2.cvtColor(image,cv2.COLOR_BGR2RGB)
+    data = request.get_json()
+    imgs = data["images"]
+    images = []
+    for img in imgs:
+        images.append(np.array(Image.open(io.BytesIO(base64.b64decode(img)))))
+    return detection_loop(images)
 
-if __name__ == '__main__':
-    app.run(debug = True, host = '0.0.0.0')
+if __name__ == "__main__":
+    sess, model = load_model()
+    app.run(debug=True, port=8000)

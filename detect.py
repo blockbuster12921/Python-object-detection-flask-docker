@@ -136,5 +136,3 @@ def detect_img(sess, detection_graph, img_arr, conf_thresh=0.5):
 if __name__ == '__main__':
     img = cv.imread('object-detection-SMALL/000000146462.jpg')
     sess, model = load_model()
-    
-    print(detect_img(sess, model, img, 0.5))

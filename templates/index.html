@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image to Base64</title>
+</head>
+<body>
+    <input type="file" id="inputImage" accept="image/*" multiple>
+    <button onclick="send()">Submit</button>
+    <textarea id="outputBase64" rows="10" cols="80" readonly></textarea>
+
+    <script>
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+        var input = document.getElementById('inputImage');
+        async function send(){
+            var curFiles = input.files;
+            
+            var temp = []
+            var cnt = curFiles.length
+            
+            for (let i = 0 ; i < cnt ; i ++){
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    const base64 = reader.result.split(',')[1];
+                    temp.push(base64);
+                    cnt = cnt - 1
+                } 
+                reader.readAsDataURL(curFiles[i]);
+            }
+
+            while(cnt){
+                await sleep(1000);
+            }
+            
+            data = {
+                "images": temp
+            }
+            
+            fetch('http://127.0.0.1:8000/api/detect', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    }).then(response => response.json())
+                    .then(response => console.log(JSON.stringify(response)))
+            
+        }
+    </script>
+</body>
+</html>
