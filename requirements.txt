@@ -8,3 +8,4 @@ fastapi
 tflite
 tensorflow
 tflite-runtime
+flask_cors
