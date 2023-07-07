@@ -18,14 +18,28 @@
         }
         var input = document.getElementById('inputImage');
         async function send(){
-            var curFiles = input.files;
+            /* Send request of the images as base64 array list */
             
+            // Track the start upload time
+            var currentDate = new Date();
+            var currentTime = currentDate.getTime();
+            console.log('######################', currentTime);
+
+            // Get the filesnames from input
+            var curFiles = input.files;
+
+            // Initialize the base64 array list
             var temp = []
+
+            // Get the number of uploaded files
             var cnt = curFiles.length
             
+            // Iterate through uploaded files and push the base64 string into list
             for (let i = 0 ; i < cnt ; i ++){
+                // Initialize the file reader
                 const reader = new FileReader();
                 
+                // Read the base64 image and push into list
                 reader.onload = function(e) {
                     const base64 = reader.result.split(',')[1];
                     temp.push(base64);
@@ -33,15 +47,19 @@
                 } 
                 reader.readAsDataURL(curFiles[i]);
             }
-
+            
+            // Wait until the upload finishes
             while(cnt){
                 await sleep(1000);
             }
             
+            // Put the data into json format
             data = {
-                "images": temp
+                "images": temp,
+                "upload_start_time": currentTime
             }
             
+            // Send the base64 image list to backend as POST request
             fetch('http://127.0.0.1:8000/api/detect', {
                         method: 'POST',
                         headers: {

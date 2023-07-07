@@ -3,8 +3,10 @@ import numpy as np
 import cv2 as cv
 import time
 
+# Define the model path
 MODEL_PATH = 'models/ssdlite_mobilenet_v2.pb'
 
+# Initialize the dictionary to convert the id to image name
 id2name = {1: 'person',
  2: 'bicycle',
  3: 'car',
@@ -88,6 +90,8 @@ id2name = {1: 'person',
 
 
 def load_model():
+    """Returns the loaded model"""
+
     detection_graph = tf.Graph()
     with detection_graph.as_default():
         # od_graph_def = tf.GraphDef()
@@ -103,20 +107,24 @@ def load_model():
 
 
 def detect_img(sess, detection_graph, img_arr, conf_thresh=0.5):
-    # with detection_graph.as_default():
-    #     with tf.Session(graph=detection_graph) as sess:
-            # Definite input and output Tensors for detection_graph
+    """Takes an image array as input and returns the detected object and inference time"""
+    
+    # Track the starting time of the reference
     start_time = time.time()
     
     image_tensor = detection_graph.get_tensor_by_name('image_tensor:0')
+
     # Each box represents a part of the image where a particular object was detected.
     detection_boxes = detection_graph.get_tensor_by_name('detection_boxes:0')
+    
     # Each score represent how level of confidence for each of the objects.
     # Score is shown on the result image, together with the class label.
     detection_scores = detection_graph.get_tensor_by_name('detection_scores:0')
     detection_classes = detection_graph.get_tensor_by_name('detection_classes:0')
     num_detections = detection_graph.get_tensor_by_name('num_detections:0')
     image_np_expanded = np.expand_dims(img_arr, axis=0)
+
+    # Get the bounding boxes, scores and classes
     (boxes, scores, classes, num) = sess.run(
                     [detection_boxes, detection_scores, detection_classes, num_detections],
                     feed_dict={image_tensor: image_np_expanded})
@@ -124,8 +132,7 @@ def detect_img(sess, detection_graph, img_arr, conf_thresh=0.5):
     height, width, _ = img_arr.shape
     results = []
     
-    end_time = time.time()
-    
+    # iterate through classes and put them into results
     for idx, class_id in enumerate(classes[0]):
         conf = scores[0, idx]
         if conf > conf_thresh:
@@ -135,5 +142,8 @@ def detect_img(sess, detection_graph, img_arr, conf_thresh=0.5):
             results.append({"name": id2name[class_id],
                             "bounding_box": [int(xmin), int(ymin), int(xmax), int(ymax)],
             })
+    
+    # Track the end time of the reference
+    end_time = time.time()
 
     return results, end_time - start_time
