@@ -60,7 +60,7 @@
             }
             
             // Send the base64 image list to backend as POST request
-            fetch('http://127.0.0.1:8000/api/detect', {
+            fetch('/api/detect', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
