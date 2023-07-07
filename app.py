@@ -24,8 +24,6 @@ def detection_loop(images):
     global data
     global total_upload_time
 
-    print("############", total_upload_time)
-
     # Iterate through the images in the image list and detect the objects
     for img in images:
         # detect the objects in the current image

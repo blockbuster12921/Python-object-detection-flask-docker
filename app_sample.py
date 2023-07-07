@@ -62,7 +62,6 @@ def upload():
 		# Iterate for each file in the files List, and Save them
 
 		for file in files:
-			print(file)
 			file.save('uploads/' + file.filename)
 		return "<h1>Files Uploaded Successfully.!</h1>"
   
