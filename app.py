@@ -9,7 +9,8 @@ from detect import *
 import json
 
 app = Flask(__name__)
-CORS(app)
+# CORS(app)
+cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
 # Initialize the data and upload time
 data = {}
