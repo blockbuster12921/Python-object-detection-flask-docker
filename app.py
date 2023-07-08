@@ -58,8 +58,7 @@ def index():
     # Render the index.html with the returned data
   	return render_template("index.html", data=data)
 
-# @app.route('/api/detect', methods=['POST'])
-@app.route('http://44.201.191.190/api/detect', methods=['POST'])
+@app.route('/api/detect', methods=['POST'])
 
 def main():
     """Receive the request from the frontend and send it to the detection loop"""
