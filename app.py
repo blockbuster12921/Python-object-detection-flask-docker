@@ -63,6 +63,7 @@ def main():
     """Receive the request from the frontend and send it to the detection loop"""
     
     # Receive the request from frontend in json format
+    print(data)
     data = request.get_json()
     imgs = data["images"]
 
