@@ -85,11 +85,15 @@ def main():
     for img in imgs:
         images.append(np.array(Image.open(io.BytesIO(base64.b64decode(img)))))
     return detection_loop(images)
-    
+
+@app.route('/api/detect', methods=['GET'])
+def detect_get():
+    return "hello"
+
 
 if __name__ == "__main__":
     # Load the detection model
     sess, model = load_model()
 
     # Run the flask app
-    app.run(host = '0.0.0.0', debug=True, port=8000)
+    app.run(host = '127.0.0.1', debug=True, port=8000)
