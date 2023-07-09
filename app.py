@@ -64,7 +64,6 @@ def main():
     """Receive the request from the frontend and send it to the detection loop"""
     
     # Receive the request from frontend in json format
-    print(data)
     data = request.get_json()
     imgs = data["images"]
 
@@ -86,9 +85,9 @@ def main():
         images.append(np.array(Image.open(io.BytesIO(base64.b64decode(img)))))
     return detection_loop(images)
 
-@app.route('/api/detect', methods=['GET'])
-def detect_get():
-    return "hello"
+# @app.route('/api/detect', methods=['GET'])
+# def detect_get():
+#     return "hello"
 
 
 if __name__ == "__main__":
