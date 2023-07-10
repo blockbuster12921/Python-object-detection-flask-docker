@@ -61,7 +61,7 @@ def init_model():
 @app.route('/')
 def index():
     # Render the index.html with the returned data
-        return render_template("index.html", data=data)
+    return render_template("index.html", data=data)
 
 @app.route('/api/detect', methods=['POST'])
 def main():
