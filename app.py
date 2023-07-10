@@ -53,13 +53,22 @@ def detection_loop(images):
 
     return make_response(data, 200)
 
+@app.before_first_request
+def init_model():
+   global sess, model
+   sess, model = load_model()
+
 @app.route('/')
 def index():
     # Render the index.html with the returned data
-  	return render_template("index.html", data=data)
+        return render_template("index.html", data=data)
+
+@app.route('/')
+def index():
+    # Render the index.html with the returned data
+        return render_template("index.html", data=data)
 
 @app.route('/api/detect', methods=['POST'])
-
 def main():
     """Receive the request from the frontend and send it to the detection loop"""
     
@@ -85,14 +94,10 @@ def main():
         images.append(np.array(Image.open(io.BytesIO(base64.b64decode(img)))))
     return detection_loop(images)
 
-# @app.route('/api/detect', methods=['GET'])
-# def detect_get():
-#     return "hello"
-
 
 if __name__ == "__main__":
     # Load the detection model
-    sess, model = load_model()
+#    sess, model = load_model()
 
     # Run the flask app
     app.run(host = '0.0.0.0', debug=True, port=8000)
