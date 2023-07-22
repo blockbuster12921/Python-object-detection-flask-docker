@@ -19,6 +19,8 @@ We utilized git to upload the code on EC2. Here, we installed the docker on EC2 
 
 In order to deploy the application on the AWS EC2, we should reverse the proxy using nginx. We can run the web browser and type the ip address and port of this EC2 instance to open this app. The command is http://<ip_address>:8000/. For example, http://3.91.148.139:8000/.
 
+<img align="center" src="images/diagram.png"/>
+
 ## Build docker image from Dockerfile
 ```bash
 docker build -t dic-assignment .
