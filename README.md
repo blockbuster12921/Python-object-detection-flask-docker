@@ -6,10 +6,6 @@ Throughout this project, we address the challenges of object detection performan
 ### 2.1. Implementation of data processing and application
 We initially utilized a CNN model implemented in Tensorflow documentation. The original documentation utilizes FasterRCNN+InceptionResNet V2 for the detection. The size of this model is larger than 200 MB so it takes a bit long to load the model. So, we utilized a more lightweight model ssd+mobilenet. I downloaded this model on the local and loaded the model before the flask app started.
 
-
-### 2.2. Dockerization of application
-We utilized docker to build a container for the flask app we built. In order to run the flask app on server, we utilized Python gunicorn library. And the server starts running with "gunicorn app:app --bind 0.0.0.0:8000" command on the server. We utilized flask 2.1.3 for this app. 
-
 ### 2.3. Local and remote execution
 - Local execution
 We can run the flask app on a local machine using the “python3 app.py” command. Or we can use "gunicorn app:app --bind 0.0.0.0:8000".
