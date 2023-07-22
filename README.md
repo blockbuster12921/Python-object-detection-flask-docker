@@ -6,10 +6,6 @@ Throughout this project, we address the challenges of object detection performan
 ### 2.1. Implementation of data processing and application
 We initially utilized a CNN model implemented in Tensorflow documentation. The original documentation utilizes FasterRCNN+InceptionResNet V2 for the detection. The size of this model is larger than 200 MB so it takes a bit long to load the model. So, we utilized a more lightweight model ssd+mobilenet. I downloaded this model on the local and loaded the model before the flask app started.
 
-
-### 2.2. Dockerization of application
-We utilized docker to build a container for the flask app we built. In order to run the flask app on server, we utilized Python gunicorn library. And the server starts running with "gunicorn app:app --bind 0.0.0.0:8000" command on the server. We utilized flask 2.1.3 for this app. 
-
 ### 2.3. Local and remote execution
 - Local execution
 We can run the flask app on a local machine using the “python3 app.py” command. Or we can use "gunicorn app:app --bind 0.0.0.0:8000".
@@ -23,20 +19,22 @@ We utilized git to upload the code on EC2. Here, we installed the docker on EC2 
 
 In order to deploy the application on the AWS EC2, we should reverse the proxy using nginx. We can run the web browser and type the ip address and port of this EC2 instance to open this app. The command is http://<ip_address>:8000/. For example, http://3.91.148.139:8000/.
 
-## Build docker image from Dockerfile
+<img align="center" src="images/diagram.png"/>
+
+## Run the app with the following commands
+### Build docker image from Dockerfile
 ```bash
 docker build -t dic-assignment .
 ```
 
-## Run docker container locally
+### Run docker container locally
 ```bash
 docker run -d -p 5000:5000 dic-assignment
 ```
 
-## Run the flask app
+### Run the flask app
 ```bash
 python3 app.py
 ```
 
 Open the web browser and type localhost:8000
-
